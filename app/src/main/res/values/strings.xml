@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">network</string>
-    <string name="get_data">get datas</string>
+    <string name="get_data">get data</string>
+    <string name="open_count">count open</string>
 </resources>

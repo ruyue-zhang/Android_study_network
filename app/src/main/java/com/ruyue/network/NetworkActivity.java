@@ -33,6 +33,8 @@ public class NetworkActivity extends AppCompatActivity {
 
     @BindView(R.id.get_data)
     Button getDataBtn;
+    @BindView(R.id.open_count)
+    Button openCountBtn;
     ArrayList<Person> dataList;
 
     @Override
@@ -45,6 +47,13 @@ public class NetworkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getData();
+            }
+        });
+
+        openCountBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "app had be opened", Toast.LENGTH_SHORT).show();
             }
         });
     }
