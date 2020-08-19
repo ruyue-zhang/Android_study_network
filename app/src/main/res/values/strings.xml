@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">network</string>
+    <string name="get_data">get datas</string>
 </resources>
