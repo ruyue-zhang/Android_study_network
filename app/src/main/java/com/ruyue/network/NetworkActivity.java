@@ -12,42 +12,33 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+
 public class NetworkActivity extends AppCompatActivity {
-    private Button getDataBtn;
+
+    @BindView(R.id.get_data)
+    Button getDataBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network);
+        ButterKnife.bind(this);
 
-        getDataBtn = findViewById(R.id.get_data);
-        setListeners();
-    }
-
-
-
-    private void setListeners() {
-        OnClick onclick = new OnClick();
-        getDataBtn.setOnClickListener(onclick);
-
-
-    }
-
-    private class OnClick implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.get_data:
-                    getData();
-                    break;
+        getDataBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getData();
             }
-        }
+        });
     }
 
     private void getData() {
