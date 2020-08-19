@@ -30,6 +30,7 @@ public class NetworkActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch(v.getId()) {
                 case R.id.get_data:
+
                     break;
             }
         }
