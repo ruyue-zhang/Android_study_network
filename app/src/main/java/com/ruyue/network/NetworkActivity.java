@@ -7,11 +7,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -27,7 +33,7 @@ public class NetworkActivity extends AppCompatActivity {
 
     @BindView(R.id.get_data)
     Button getDataBtn;
-
+    ArrayList<Person> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +72,29 @@ public class NetworkActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                        gonsAnalyzeJSONArray(result);
+                        if(dataList.size() > 0) {
+                            Toast.makeText(getApplicationContext(), dataList.get(0).getName(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
         });
+    }
+
+    public void gonsAnalyzeJSONArray( String result) {
+        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+        JsonArray jsonArray = jsonObject.getAsJsonArray("data");
+
+        Gson gson = new Gson();
+        dataList = new ArrayList<>();
+
+        for (JsonElement p : jsonArray) {
+            Person person = gson.fromJson(p, new TypeToken<Person>() {}.getType());
+            dataList.add(person);
+        }
     }
 }
 

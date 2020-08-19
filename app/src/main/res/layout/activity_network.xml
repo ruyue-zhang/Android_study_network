@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_btn_hor"
+        android:layout_marginTop="@dimen/margin_btn_top"
         android:text="@string/get_data"
         android:textAllCaps="false"
-        android:layout_marginTop="@dimen/margin_btn_top"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
