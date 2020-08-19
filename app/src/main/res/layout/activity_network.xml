@@ -10,12 +10,12 @@
         android:id="@+id/get_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_btn"
+        android:layout_marginHorizontal="@dimen/margin_btn_hor"
         android:text="@string/get_data"
         android:textAllCaps="false"
+        android:layout_marginTop="@dimen/margin_btn_top"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
