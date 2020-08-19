@@ -72,7 +72,7 @@ public class NetworkActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        gonsAnalyzeJSONArray(result);
+                        gsonAnalyzeJSONArray(result);
                         if(dataList.size() > 0) {
                             Toast.makeText(getApplicationContext(), dataList.get(0).getName(), Toast.LENGTH_SHORT).show();
                         } else {
@@ -84,8 +84,9 @@ public class NetworkActivity extends AppCompatActivity {
         });
     }
 
-    public void gonsAnalyzeJSONArray( String result) {
-        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+    public void gsonAnalyzeJSONArray( String result) {
+        //JsonObject jsonObject = JsonParser().parse(result).getAsJsonObject();
+        JsonObject jsonObject = JsonParser.parseString(result).getAsJsonObject();
         JsonArray jsonArray = jsonObject.getAsJsonArray("data");
 
         Gson gson = new Gson();
