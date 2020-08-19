@@ -2,7 +2,10 @@ package com.ruyue.network;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -37,6 +40,7 @@ public class NetworkActivity extends AppCompatActivity {
     Button openCountBtn;
     ArrayList<Person> dataList;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +57,19 @@ public class NetworkActivity extends AppCompatActivity {
         openCountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "app had be opened", Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
+                int open_count = sharedPref.getInt("count", 0);
+                Toast.makeText(getApplicationContext(), Integer.toString(open_count), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
+        int count = sharedPref.getInt("count", 0);
+        sharedPref.edit().putInt("count", ++count).apply();
     }
 
     private void getData() {
