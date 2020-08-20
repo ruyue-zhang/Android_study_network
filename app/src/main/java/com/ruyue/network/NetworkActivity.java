@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,6 +35,9 @@ import okhttp3.Response;
 
 
 public class NetworkActivity extends AppCompatActivity {
+    private static final String URL = "https://twc-android-bootcamp.github.io/fake-data/data/default.json";
+    private static final int DEFAULT_VALUE = 0;
+    private static final String KEY = "count";
 
     @BindView(R.id.get_data)
     Button getDataBtn;
@@ -51,7 +55,7 @@ public class NetworkActivity extends AppCompatActivity {
                 break;
             case R.id.open_count:
                 SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
-                int open_count = sharedPref.getInt("count", 0);
+                int open_count = sharedPref.getInt(KEY, DEFAULT_VALUE);
                 Toast.makeText(getApplicationContext(), Integer.toString(open_count), Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -68,36 +72,18 @@ public class NetworkActivity extends AppCompatActivity {
 
         MyApplication myApplication = (MyApplication)getApplication();
         personDao = myApplication.getLocalDataSource().personDao();
-
-
-//        getDataBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getData();
-//            }
-//        });
-//
-//        openCountBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
-//                int open_count = sharedPref.getInt("count", 0);
-//                Toast.makeText(getApplicationContext(), Integer.toString(open_count), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
-        int count = sharedPref.getInt("count", 0);
-        sharedPref.edit().putInt("count", ++count).apply();
+        int count = sharedPref.getInt(KEY, 0);
+        sharedPref.edit().putInt(KEY, ++count).apply();
     }
 
     private void getData() {
-        String url = "https://twc-android-bootcamp.github.io/fake-data/data/default.json";
-        final Request request = new Request.Builder().url(url).build();
+        final Request request = new Request.Builder().url(URL).build();
         OkHttpClient okHttpClient = new OkHttpClient();
         Call call = okHttpClient.newCall(request);
 
@@ -118,14 +104,11 @@ public class NetworkActivity extends AppCompatActivity {
                 final String result = Objects.requireNonNull(response.body()).string();
                 gsonAnalyzeJSONArray(result);
                 insertDataInRoom(dataList);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(dataList.size() > 0) {
-                            Toast.makeText(getApplicationContext(), dataList.get(0).getName(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-                        }
+                runOnUiThread(() -> {
+                    if(dataList.size() > 0) {
+                        Toast.makeText(getApplicationContext(), dataList.get(0).getName(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
