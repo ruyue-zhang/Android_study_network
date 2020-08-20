@@ -20,10 +20,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -38,6 +40,24 @@ public class NetworkActivity extends AppCompatActivity {
     @BindView(R.id.open_count)
     Button openCountBtn;
     ArrayList<Person> dataList;
+    String firstName;
+    PersonDao personDao;
+
+    @OnClick({R.id.get_data,R.id.open_count})
+    public void onClick(Button btn) {
+        switch(btn.getId()) {
+            case R.id.get_data:
+                getData();
+                break;
+            case R.id.open_count:
+                SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
+                int open_count = sharedPref.getInt("count", 0);
+                Toast.makeText(getApplicationContext(), Integer.toString(open_count), Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+    }
 
 
     @Override
@@ -46,21 +66,25 @@ public class NetworkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_network);
         ButterKnife.bind(this);
 
-        getDataBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getData();
-            }
-        });
+        MyApplication myApplication = (MyApplication)getApplication();
+        personDao = myApplication.getLocalDataSource().personDao();
 
-        openCountBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
-                int open_count = sharedPref.getInt("count", 0);
-                Toast.makeText(getApplicationContext(), Integer.toString(open_count), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+//        getDataBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getData();
+//            }
+//        });
+//
+//        openCountBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
+//                int open_count = sharedPref.getInt("count", 0);
+//                Toast.makeText(getApplicationContext(), Integer.toString(open_count), Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     @Override
@@ -80,10 +104,11 @@ public class NetworkActivity extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull final IOException e) {
+                firstName = getFirstNameFromRoom();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), firstName, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -91,10 +116,11 @@ public class NetworkActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String result = Objects.requireNonNull(response.body()).string();
+                gsonAnalyzeJSONArray(result);
+                insertDataInRoom(dataList);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        gsonAnalyzeJSONArray(result);
                         if(dataList.size() > 0) {
                             Toast.makeText(getApplicationContext(), dataList.get(0).getName(), Toast.LENGTH_SHORT).show();
                         } else {
@@ -117,6 +143,16 @@ public class NetworkActivity extends AppCompatActivity {
         for (JsonElement p : jsonArray) {
             Person person = gson.fromJson(p, new TypeToken<Person>() {}.getType());
             dataList.add(person);
+        }
+    }
+
+    public String getFirstNameFromRoom() {
+        return personDao.getPerson().get(0).getName();
+    }
+
+    public void insertDataInRoom(List<Person> list) {
+        for (Person person : list) {
+            personDao.insertPerson(person);
         }
     }
 }
