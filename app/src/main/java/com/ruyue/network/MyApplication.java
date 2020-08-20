@@ -1,19 +1,27 @@
 package com.ruyue.network;
 
 import android.app.Application;
-import android.content.Context;
+
+import androidx.room.Room;
 
 public class MyApplication extends Application {
-
-    private static Context mContext;
+    private static MyApplication myApplication;
+    private static LocalDataSource localDataSource;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = getApplicationContext();
+        myApplication = this;
+        localDataSource = Room.databaseBuilder(getApplicationContext(),
+                LocalDataSource.class,
+                "person").build();
     }
 
-    public static Context getInstance() {
-        return mContext;
+    public static MyApplication getInstance() {
+        return myApplication;
+    }
+
+    public LocalDataSource getLocalDataSource() {
+        return localDataSource;
     }
 }
