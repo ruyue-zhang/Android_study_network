@@ -72,14 +72,8 @@ public class NetworkActivity extends AppCompatActivity {
 
         MyApplication myApplication = (MyApplication)getApplication();
         personDao = myApplication.getLocalDataSource().personDao();
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
-        int count = sharedPref.getInt(KEY, 0);
-        sharedPref.edit().putInt(KEY, ++count).apply();
+        changeOpenValue();
     }
 
     private void getData() {
@@ -113,6 +107,12 @@ public class NetworkActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    public void changeOpenValue() {
+        SharedPreferences sharedPref = NetworkActivity.this.getPreferences(Context.MODE_PRIVATE);
+        int count = sharedPref.getInt(KEY, DEFAULT_VALUE);
+        sharedPref.edit().putInt(KEY, ++count).apply();
     }
 
     public void gsonAnalyzeJSONArray( String result) {
