@@ -43,7 +43,7 @@ public class NetworkActivity extends AppCompatActivity {
     Button getDataBtn;
     @BindView(R.id.open_count)
     Button openCountBtn;
-    ArrayList<Person> dataList;
+    List<Person> dataList;
     String firstName;
     PersonDao personDao;
 
@@ -116,17 +116,9 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
     public void gsonAnalyzeJSONArray( String result) {
-        //JsonObject jsonObject = JsonParser().parse(result).getAsJsonObject();
-        JsonObject jsonObject = JsonParser.parseString(result).getAsJsonObject();
-        JsonArray jsonArray = jsonObject.getAsJsonArray("data");
-
         Gson gson = new Gson();
-        dataList = new ArrayList<>();
-
-        for (JsonElement p : jsonArray) {
-            Person person = gson.fromJson(p, new TypeToken<Person>() {}.getType());
-            dataList.add(person);
-        }
+        Wrapper wrapper = gson.fromJson(result, Wrapper.class);
+        dataList = wrapper.getData();
     }
 
     public String getFirstNameFromRoom() {
